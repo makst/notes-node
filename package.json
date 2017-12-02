@@ -1,0 +1,62 @@
+{
+  "name": "notes-node",
+  "version": "0.0.1",
+  "description": "Notes app",
+  "main": "lib/app.js",
+  "nyc": {
+    "require": [
+      "babel-register"
+    ],
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  },
+  "scripts": {
+    "start": "node app.js",
+    "start:watch": "nodemon app.js",
+    "pretest": "node_modules/.bin/eslint --ignore-path .gitignore .",
+    "babel:build": "babel src --out-dir lib",
+    "test:tape": "find src -iname '*.test.js' | xargs babel-node test/tap.js",
+    "test:integration:tape": "babel-node test/integration.js",
+    "test:tape:cover": "find src -iname '*.test.js' | NODE_ENV=test xargs node_modules/.bin/nyc node test/tap.js",
+    "test:tape:watch": "find src -iname '*.test.js' | xargs nodemon --exec babel-node -- test/tap.js",
+    "d:rm": "docker rm -f notes-node",
+    "d:rmi": "docker rmi -f makst/notes-node",
+    "d:build": "npm run d:rmi; docker build -t makst/notes-node .",
+    "d:run": "npm run d:rm; docker run -it --name=notes-node -v $(pwd):/app makst/notes-node",
+    "d:babel:build": "npm run d:run -- npm run babel:build",
+    "d:debug": "npm run d:rm; docker run -it --name=notes-node -v $(pwd):/app -p 9229:9229 makst/notes-node node_modules/.bin/babel-node --inspect-brk=0.0.0.0:9229",
+    "d:debug:watch": "npm run d:rm; docker run -it --name=notes-node -v $(pwd):/app -p 9229:9229 makst/notes-node nodemon --inspect-brk=0.0.0.0:9229",
+    "d:test:faucet": "npm run d:run -- /bin/sh -c 'npm run test:tape | node_modules/.bin/faucet'",
+    "d:test:faucet:watch": "npm run d:run -- /bin/sh -c 'npm run test:tape:watch | node_modules/.bin/faucet'",
+    "d:test:tap:spec": "npm run d:run -- /bin/sh -c 'npm run test:tape | node_modules/.bin/tap-spec'",
+    "d:test:tap:spec:watch": "npm run d:run -- /bin/sh -c 'npm run test:tape:watch | node_modules/.bin/tap-spec'",
+    "d:test:cover": "npm run d:run -- /bin/sh -c 'npm run test:tape:cover'",
+    "d:test:integration": "npm run d:run -- /bin/sh -c 'npm run test:integration:tape | node_modules/.bin/faucet'"
+  },
+  "author": "Max Tkachenko",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "yargs": "^4.7.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-istanbul": "^4.1.5",
+    "babel-preset-env": "^1.6.1",
+    "babel-register": "^6.26.0",
+    "eslint": "^4.14.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "faucet": "0.0.1",
+    "nodemon": "^1.13.3",
+    "nyc": "^11.3.0",
+    "proxyquire": "^1.8.0",
+    "tap-spec": "^4.1.1",
+    "tape-async": "^2.3.0",
+    "testdouble": "^3.2.6"
+  }
+}
