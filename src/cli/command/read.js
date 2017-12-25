@@ -1,16 +1,15 @@
-import * as cliOption from '../option';
-import { noteRepository } from '../../dataAccess/repository';
-import { noteTitleSpecification } from '../../dataAccess/specification';
+import { curry } from 'lodash';
+import { title as titleOption } from './util/option';
 
 const getCommandInfo = () => ({
     name: 'read',
     description: 'Read a note',
     options: {
-        title: cliOption.title,
+        title: titleOption,
     },
 });
 
-const run = async ({ title }) => {
+const run = async (noteRepository, noteTitleSpecification, { title }) => {
     console.log('Reading note...');
     const spec = noteTitleSpecification.create(title);
     const note = await noteRepository.get(spec);
@@ -18,4 +17,9 @@ const run = async ({ title }) => {
     return note;
 };
 
-export { getCommandInfo, run };
+export default function makeModule(noteRepository, noteTitleSpecification) {
+    return {
+        getCommandInfo,
+        run: curry(run, 3)(noteRepository, noteTitleSpecification),
+    };
+}

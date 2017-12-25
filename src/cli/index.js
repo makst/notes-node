@@ -1,7 +1,15 @@
-import * as add from './command/add';
+import { noteRepository } from '../dataAccess/repository';
+import { noteTitleSpecification } from '../dataAccess/specification';
+
+import makeAddCommand from './command/add';
 import * as defaultCommand from './command/default';
-import * as list from './command/list';
-import * as read from './command/read';
-import * as remove from './command/remove';
+import makeListCommand from './command/list';
+import makeReadCommand from './command/read';
+import makeRemoveCommand from './command/remove';
+
+const add = makeAddCommand(noteRepository);
+const list = makeListCommand(noteRepository);
+const read = makeReadCommand(noteRepository, noteTitleSpecification);
+const remove = makeRemoveCommand(noteRepository, noteTitleSpecification);
 
 export { add, list, read, remove, defaultCommand as default };

@@ -1,13 +1,19 @@
 import test from 'tape-async';
-import proxyquire from 'proxyquire';
 import td from 'testdouble';
+import makeListCommand from './list';
+
+function setup() {
+    const noteRepository = td.object(['getAll']);
+    return { noteRepository };
+}
 
 test('listCommand.getCommandInfo() returns list command info', (assert) => {
     // arrange
-    const listCommand = require('./list');
+    const { noteRepository } = setup();
+    const list = makeListCommand(noteRepository);
 
     // act
-    const cInfo = listCommand.getCommandInfo();
+    const cInfo = list.getCommandInfo();
 
     // assert
     assert.deepEqual(
@@ -22,19 +28,16 @@ test('listCommand.getCommandInfo() returns list command info', (assert) => {
 
 test('listCommand.run() returns all notes from underlying data source', async (assert) => {
     // arrange
-    const noteRepository = td.object(['getAll']);
-    const listCommand = proxyquire('./list', {
-        '../../dataAccess/repository': {
-            noteRepository,
-        },
-    });
+    const { noteRepository } = setup();
+    const list = makeListCommand(noteRepository);
+
     const allNotes = [{ title: 'note1', body: 'body1' }, { title: 'note2', body: 'body2' }];
     td.when(noteRepository.getAll()).thenResolve(allNotes);
 
     // act
-    const actualResult = await listCommand.run();
+    const actualResult = await list.run();
 
-    // assert
+    // asser
     assert.equal(actualResult, allNotes);
     assert.end();
 });

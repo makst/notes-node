@@ -1,30 +1,21 @@
 import test from 'tape-async';
-import proxyquire from 'proxyquire';
 import td from 'testdouble';
+import { title } from './util/option';
+import makeRemoveCommand from './remove';
 
 function setup() {
-    const cliOption = {
-        title: 'title',
-    };
-
     const noteRepository = td.object(['remove']);
-
-    const removeCommand = proxyquire('./remove', {
-        '../option': cliOption,
-        '../../dataAccess/repository': {
-            noteRepository,
-        },
-    });
-
-    return { cliOption, noteRepository, removeCommand };
+    const noteTitleSpecification = td.object(['create']);
+    return { noteRepository, noteTitleSpecification };
 }
 
 test('removeCommand.getCommandInfo() returns remove command info', (assert) => {
     // arrange
-    const { cliOption, removeCommand } = setup();
+    const { noteRepository, noteTitleSpecification } = setup();
+    const remove = makeRemoveCommand(noteRepository, noteTitleSpecification);
 
     // act
-    const cInfo = removeCommand.getCommandInfo();
+    const cInfo = remove.getCommandInfo();
 
     // assert
     assert.deepEqual(
@@ -33,7 +24,7 @@ test('removeCommand.getCommandInfo() returns remove command info', (assert) => {
             name: 'remove',
             description: 'Remove a note',
             options: {
-                title: cliOption.title,
+                title,
             },
         },
     );
@@ -42,12 +33,17 @@ test('removeCommand.getCommandInfo() returns remove command info', (assert) => {
 
 test('removeCommand.run() returns note from underlying data source', async (assert) => {
     // arrange
-    const { noteRepository, removeCommand } = setup();
+    const { noteRepository, noteTitleSpecification } = setup();
+    const specification = {};
     const note = { title: 'last note', body: 'body' };
-    td.when(noteRepository.remove(td.matchers.anything())).thenResolve(note);
+
+    td.when(noteTitleSpecification.create(note.title)).thenReturn(specification);
+    td.when(noteRepository.remove(specification)).thenResolve(note);
+
+    const remove = makeRemoveCommand(noteRepository, noteTitleSpecification);
 
     // act
-    const actualResult = await removeCommand.run(note);
+    const actualResult = await remove.run(note);
 
     // assert
     assert.equal(actualResult, note);
