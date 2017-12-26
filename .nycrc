@@ -1,0 +1,11 @@
+{
+    "require": [
+      "babel-register"
+    ],
+    "reporter": [
+      "text",
+      "html"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  }
