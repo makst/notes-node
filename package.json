@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Notes app",
   "main": "lib/app.js",
+  "bin": {
+    "notes": "lib/app.js"
+  },
   "scripts": {
     "start": "babel-node src/app.js",
     "start:debug": "babel-node --inspect-brk=127.0.0.1:9229 src/app.js",
@@ -15,7 +18,8 @@
     "test:integration": "babel-node test/integration.js | faucet",
     "test:integration:cover": "NODE_ENV=test nyc babel-node test/integration.js",
     "precommit": "npm run test",
-    "prepush": "npm run test"
+    "prepush": "npm run test",
+    "prepack": "npm run build"
   },
   "author": "Max Tkachenko",
   "license": "ISC",

@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import yargs from 'yargs';
 import { keys } from 'lodash';
 import * as commands from './cli';
