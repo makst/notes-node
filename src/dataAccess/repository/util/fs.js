@@ -4,11 +4,13 @@ import { promisify } from 'util';
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
 
-const saveNotes = async notes => writeFile(`${__dirname}/../storage.json`, JSON.stringify(notes));
+const NOTES_LOCATION = `${__dirname}/../storage.json`;
 
-const readNotes = async () => {
-    const notes = await readFile(`${__dirname}/../storage.json`, { encoding: 'utf8' });
+const save = async notes => writeFile(NOTES_LOCATION, JSON.stringify(notes));
+
+const read = async () => {
+    const notes = await readFile(NOTES_LOCATION, { encoding: 'utf8' });
     return JSON.parse(notes);
 };
 
-export { saveNotes as save, readNotes as read };
+export { save, read };
