@@ -1,13 +1,12 @@
-import { filter, remove, cloneDeep } from 'lodash';
-import { saveNotes, readNotes } from './util/fs';
+import { filter, remove, cloneDeep, curry } from 'lodash';
 
-const getAll = async () => {
+const getAll = async (readNotes) => {
     const notes = await readNotes();
     return cloneDeep(notes);
 };
 
-const add = async (note) => {
-    const allNotes = await getAll();
+const add = async (readNotes, saveNotes, note) => {
+    const allNotes = await readNotes();
     const alreadyExists = !!filter(allNotes, ['title', note.title]).length;
     const noTitle = !note.title;
 
@@ -19,8 +18,8 @@ const add = async (note) => {
     return note;
 };
 
-const get = async (specification) => {
-    const allNotes = await getAll();
+const get = async (readNotes, specification) => {
+    const allNotes = await readNotes();
     const note = filter(
         allNotes,
         n => specification.isSatisfiedBy(n),
@@ -29,8 +28,8 @@ const get = async (specification) => {
     return note;
 };
 
-const removeNote = async (specification) => {
-    const allNotes = await getAll();
+const removeNote = async (readNotes, saveNotes, specification) => {
+    const allNotes = await readNotes();
     let removedNote = null;
 
     remove(allNotes, (note) => {
@@ -46,4 +45,11 @@ const removeNote = async (specification) => {
     return removedNote;
 };
 
-export { add, get, removeNote as remove, getAll };
+export default function makeModule(noteStore) {
+    return {
+        getAll() { return getAll(noteStore.read); },
+        add: curry(add, 3)(noteStore.read, noteStore.save),
+        get: curry(get, 2)(noteStore.read),
+        remove: curry(removeNote, 3)(noteStore.read, noteStore.save),
+    };
+}

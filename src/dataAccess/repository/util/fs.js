@@ -11,4 +11,4 @@ const readNotes = async () => {
     return JSON.parse(notes);
 };
 
-export { saveNotes, readNotes };
+export { saveNotes as save, readNotes as read };

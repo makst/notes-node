@@ -31,7 +31,7 @@ test('fsUtil.saveNotes(notes) saves notes to the file', async (assert) => {
     const stringifiedNotes = JSON.stringify(allNotes);
 
     // act
-    await fsUtil.saveNotes(allNotes);
+    await fsUtil.save(allNotes);
 
     // assert
     assert.doesNotThrow(() => {
@@ -48,7 +48,7 @@ test('fsUtil.readNotes() reads notes from the file', async (assert) => {
     td.when(readFile(td.matchers.contains('storage.json'), { encoding: 'utf8' })).thenResolve(stringifiedNotes);
 
     // act
-    const actualReturnedNotes = await fsUtil.readNotes();
+    const actualReturnedNotes = await fsUtil.read();
 
     // assert
     assert.deepEqual(actualReturnedNotes, allNotes);
