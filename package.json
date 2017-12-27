@@ -10,7 +10,7 @@
     "start": "babel-node src/app.js",
     "start:debug": "babel-node --inspect-brk=127.0.0.1:9229 src/app.js",
     "start:watch": "nodemon --exec babel-node src/app.js",
-    "build": "babel src --out-dir lib",
+    "build": "babel src --out-dir lib --ignore *test.js",
     "pretest": "eslint --ignore-path .gitignore .",
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "find src -iname '*.test.js' | xargs babel-node test/tap.js | faucet",
