@@ -6,11 +6,24 @@ const readFile = promisify(fs.readFile);
 
 const NOTES_LOCATION = `${__dirname}/../storage.json`;
 
-const save = async notes => writeFile(NOTES_LOCATION, JSON.stringify(notes));
+const save = async (notes) => {
+    writeFile(NOTES_LOCATION, JSON.stringify(notes));
+};
 
 const read = async () => {
-    const notes = await readFile(NOTES_LOCATION, { encoding: 'utf8' });
-    return JSON.parse(notes);
+    let unparsedNotes = null;
+
+    try {
+        unparsedNotes = await readFile(NOTES_LOCATION, { encoding: 'utf8' });
+    } catch (e) {
+        if (e.code === 'ENOENT') {
+            await save([]);
+            return [];
+        }
+        throw e;
+    }
+
+    return JSON.parse(unparsedNotes);
 };
 
 export { save, read };
