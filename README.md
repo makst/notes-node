@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/makst/notes-node.svg?branch=master)](https://travis-ci.org/makst/notes-node)
+
 About
 ====
 This is a simple demo cli application, which manages the notes, stored locally in a json file.
