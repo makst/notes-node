@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/makst/notes-node.svg?branch=master)](https://travis-ci.org/makst/notes-node)
+[![Coverage Status](https://coveralls.io/repos/github/makst/notes-node/badge.svg?branch=master)](https://coveralls.io/github/makst/notes-node?branch=master)
 
 About
 ====
