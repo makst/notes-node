@@ -17,8 +17,8 @@
     "test:unit:cover": "find src -iname '*.test.js' | NODE_ENV=test xargs nyc babel-node test/tap.js",
     "test:integration": "babel-node test/integration.js | faucet",
     "test:integration:cover": "NODE_ENV=test nyc babel-node test/integration.js",
-    "precommit": "npm run test",
-    "prepush": "npm run test",
+    "precommit": "npm run test:unit",
+    "prepush": "npm run test:unit",
     "prepack": "npm run build"
   },
   "author": "Max Tkachenko",
